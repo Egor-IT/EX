@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <p>
+        let usersData = []; <br>
+
+        loginform();<br>
+        
+        function loginform() {<br>
+          (function () {<br>
+            var app =<br>
+                "https://script.google.com/macros/s/AKfycbyWSvIIlH57YaEZ4_gVGX0rGwvTjNljrkC28qlObz4u-rENesDEXDiiAsnN1q2gmdvN_A/exec",<br>
+              output = [],<br>
+              xhr = new XMLHttpRequest();<br>
+            xhr.open("GET", app);<br>
+            xhr.onreadystatechange = function () {<br>
+              if (xhr.readyState !== 4) return;<br><br>
+  
+              if (xhr.status == 200) {<br>
+                try {<br>
+                  var r = JSON.parse(xhr.responseText),<br>
+                    result = r["result"];<br>
+                  for (var i = 0; i < result.length; i++) {<br>
+                    var obj = r["result"][i];<br>
+                    output.push({<br>
+                      name: obj[0],<br>
+                      email: obj[1],<br>
+                      password: obj[2],<br>
+                    });<br>
+                  }<br>
+                } catch (e) {console.error(e)}<br>
+              }<br><br>
+  
+              usersData = output;<br>
+              console.log(usersData);<br>
+            };<br>
+            xhr.send();<br>
+          })();<br>
+        }<br><br>
+  
+        function logining() {<br>
+          let email = document.getElementById("email").value;<br>
+          let password = document.getElementById("pass").value;<br><br>
+  
+          for (let i = 0; i < usersData.length; i++) {<br>
+            if (<br>
+              usersData[i].email == email &&<br>
+              usersData[i].password == password<br>
+            ) {<br>
+              localStorage.setItem("nameUser", usersData[i].name);<br>
+              localStorage.setItem("emailUser", usersData[i].email);<br>
+            }<br>
+          }<br>
+        }<br>
+    </p>
+</body>
+</html>

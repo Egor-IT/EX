@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    "
+  >
+    <form id="Login" action="#" method="get">
+      <div style="margin-bottom: 20px">
+        <label for="email">Введите email:</label><br />
+        <input name="User_Email" type="email" id="email" />
+      </div>
+      <div style="margin-bottom: 20px">
+        <label for="pass">Введите пароль:</label><br />
+        <input name="User_Password" type="password" id="pass" />
+      </div>
+      <div>
+        <button onclick="logining()" type="submit">Войти</button>
+      </div>
+    </form>
+
+    <script>
+      let usersData = [];
+
+      loginform();
+      
+      function loginform() {
+        (function () {
+          var app =
+              "https://script.google.com/macros/s/AKfycbyWSvIIlH57YaEZ4_gVGX0rGwvTjNljrkC28qlObz4u-rENesDEXDiiAsnN1q2gmdvN_A/exec",
+            output = [],
+            xhr = new XMLHttpRequest();
+          xhr.open("GET", app);
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4) return;
+
+            if (xhr.status == 200) {
+              try {
+                var r = JSON.parse(xhr.responseText),
+                  result = r["result"];
+                for (var i = 0; i < result.length; i++) {
+                  var obj = r["result"][i];
+                  output.push({
+                    name: obj[0],
+                    email: obj[1],
+                    password: obj[2],
+                  });
+                }
+              } catch (e) {}
+            }
+
+            usersData = output;
+          };
+          xhr.send();
+        })();
+      }
+
+      function logining() {
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("pass").value;
+
+        for (let i = 0; i < usersData.length; i++) {
+          if (
+            usersData[i].email == email &&
+            usersData[i].password == password
+          ) {
+            localStorage.setItem("nameUser", usersData[i].name);
+            localStorage.setItem("emailUser", usersData[i].email);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

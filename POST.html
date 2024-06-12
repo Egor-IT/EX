@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>
+var sheetName = <b>'Название листа'</b> <br>
+var scriptProp = PropertiesService.getScriptProperties() <br><br>
+
+function intialSetup () { <br>
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet() <br> 
+  scriptProp.setProperty('key', activeSpreadsheet.getId()) <br>
+} <br><br>
+
+function doPost (e) {<br>
+  var lock = LockService.getScriptLock()<br>
+  lock.tryLock(10000)<br><br>
+
+  try {<br>
+    var doc = SpreadsheetApp.openById(scriptProp.getProperty('key'))<br>
+    var sheet = doc.getSheetByName(sheetName)<br><br>
+
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]<br>
+    var nextRow = sheet.getLastRow() + 1<br><br>
+
+    var newRow = headers.map(function(header) {<br>
+      return header === 'timestamp' ? new Date() : e.parameter[header]<br>
+    })<br><br>
+
+    sheet.getRange(nextRow, 1, 1, newRow.length).setValues([newRow])<br><br>
+
+    return ContentService<br>
+      .createTextOutput(JSON.stringify({ 'result': 'success', 'row': nextRow }))<br>
+      .setMimeType(ContentService.MimeType.JSON)<br>
+  }<br><br>
+
+  catch (e) {<br>
+    return ContentService<br>
+      .createTextOutput(JSON.stringify({ 'result': 'error', 'error': e }))<br>
+      .setMimeType(ContentService.MimeType.JSON)<br>
+  }<br><br>
+
+  finally {<br>
+    lock.releaseLock()<br>
+  }<br>
+}
+</p>
+</body>
+</html>
