@@ -58,5 +58,33 @@
           }<br>
         }<br>
     </p>
+
+<p>
+    Скрипт на получение данных<br><br>
+var ss = SpreadsheetApp.getActiveSpreadsheet(), // spreadsheet<br>
+      s = ss.getActiveSheet(); // sheet<br>
+
+function getData(){<br>
+  var result = [],<br>
+      range = 'A:E', // диапазон ячеек, который хотим выгружать<br>
+      values = s.getRange(range).getValues(),<br>
+      last_row = parseInt(s.getLastRow());<br><br>
+    
+  for (var i = 1; i < last_row; i++) {<br>
+      result.push(values[i]);     <br>
+  }<br>
+  return result; <br>
+}<br><br>
+
+
+function doGet() {<br>
+  var data = getData();<br>
+  if(!data) {<br>
+    data = '';<br>
+  }<br>
+  return ContentService.createTextOutput(<br>
+    JSON.stringify({'result': data})).setMimeType(ContentService.MimeType.JSON);<br>
+}<br>
+</p>
 </body>
 </html>
